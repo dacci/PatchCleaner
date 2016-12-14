@@ -1,0 +1,6 @@
+BasedOnStyle:  Google
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+MacroBlockBegin: 'BEGIN_[A-Z_]+_MAP(_EX)?'
+MacroBlockEnd:   'END_[A-Z_]+_MAP'
