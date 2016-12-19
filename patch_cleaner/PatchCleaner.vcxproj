@@ -72,25 +72,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)..\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)..\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)..\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)..\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -207,6 +207,25 @@
     <ProjectReference Include="..\third_party\libchromium\libchromium.vcxproj">
       <Project>{1829af5e-ebfb-461d-a756-c84d6ead19a5}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="app\application.cpp" />
+    <ClCompile Include="ui\main_frame.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="app\application.h" />
+    <ClInclude Include="res\resource.h" />
+    <ClInclude Include="ui\main_frame.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\compatibility.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\edit-bomb.ico" />
+    <Image Include="res\main_toolbar.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
