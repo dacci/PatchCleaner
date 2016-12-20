@@ -299,8 +299,41 @@ void MainFrame::OnEditDelete(UINT /*notify_code*/, int /*id*/,
       continue;
 
     file_list_.GetItemText(i, 0, path, _countof(path));
-    if (!DeleteFile(path))
-      LOG(ERROR) << "Failed to delete " << path << ": " << GetLastError();
+
+    auto transaction =
+        CreateTransaction(nullptr, nullptr, 0, 0, 0, 1000, nullptr);
+    if (transaction == INVALID_HANDLE_VALUE) {
+      LOG(ERROR) << "Failed to create transaction: " << GetLastError();
+      break;
+    }
+
+    do {
+      WIN32_FILE_ATTRIBUTE_DATA attributes;
+      if (!GetFileAttributesTransacted(path, GetFileExInfoStandard, &attributes,
+                                       transaction)) {
+        LOG(ERROR) << "Failed to get attributes: " << GetLastError();
+        break;
+      }
+
+      attributes.dwFileAttributes &= ~FILE_ATTRIBUTE_READONLY;
+      if (!SetFileAttributesTransacted(path, attributes.dwFileAttributes,
+                                       transaction)) {
+        LOG(ERROR) << "Failed to set attributes: " << GetLastError();
+        break;
+      }
+
+      if (!DeleteFileTransacted(path, transaction)) {
+        LOG(ERROR) << "Failed to delete " << path << ": " << GetLastError();
+        break;
+      }
+
+      if (!CommitTransaction(transaction)) {
+        LOG(ERROR) << "Failed to commit transaction: " << GetLastError();
+        break;
+      }
+    } while (false);
+
+    CloseHandle(transaction);
   }
 
   PostMessage(WM_COMMAND, MAKEWPARAM(ID_FILE_UPDATE, 0));
