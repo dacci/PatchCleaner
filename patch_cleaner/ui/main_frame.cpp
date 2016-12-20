@@ -279,6 +279,9 @@ void MainFrame::OnFileUpdate(UINT /*notify_code*/, int /*id*/,
     ++count;
   }
 
+  selected_size_ = 0;
+  status_bar_.SetText(0, nullptr);
+
   file_list_.SetRedraw(TRUE);
   file_list_.RedrawWindow(
       NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN | RDW_FRAME);
