@@ -204,11 +204,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\third_party\libchromium\libchromium.vcxproj">
-      <Project>{1829af5e-ebfb-461d-a756-c84d6ead19a5}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="app\application.cpp" />
     <ClCompile Include="ui\main_frame.cpp" />
   </ItemGroup>
