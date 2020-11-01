@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 
+#pragma warning(push, 3)
 #include <atlbase.h>
 #include <atlwin.h>
 
@@ -12,6 +13,7 @@
 #include <atlcrack.h>
 #include <atlctrls.h>
 #include <atlframe.h>
+#pragma warning(pop)
 
 #include "res/resource.h"
 

@@ -3,9 +3,11 @@
 #ifndef PATCH_CLEANER_APP_APPLICATION_H_
 #define PATCH_CLEANER_APP_APPLICATION_H_
 
+#pragma warning(push, 3)
 #include <atlbase.h>
 
 #include <atlapp.h>
+#pragma warning(pop)
 
 #include <base/at_exit.h>
 

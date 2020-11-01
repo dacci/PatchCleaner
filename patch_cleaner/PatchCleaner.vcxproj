@@ -72,25 +72,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(SolutionDir)third_party\wtl\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(SolutionDir)third_party\wtl\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(SolutionDir)third_party\wtl\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration).$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\$(ProjectName)\$(Configuration).$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)third_party\libchromium\src;$(SolutionDir)third_party\wtl\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
