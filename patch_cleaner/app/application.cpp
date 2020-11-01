@@ -2,9 +2,6 @@
 
 #include "app/application.h"
 
-#include <base/command_line.h>
-#include <base/logging.h>
-
 #include "ui/main_frame.h"
 
 namespace patch_cleaner {
@@ -12,31 +9,11 @@ namespace app {
 
 Application::Application() : message_loop_(nullptr), frame_(nullptr) {}
 
-Application::~Application() {
-  base::CommandLine::Reset();
-}
+Application::~Application() {}
 
 bool Application::ParseCommandLine(LPCTSTR /*command_line*/,
                                    HRESULT* result) throw() {
   *result = S_OK;
-
-  auto succeeded = base::CommandLine::Init(0, nullptr);
-  ATLASSERT(succeeded);
-  if (!succeeded) {
-    *result = E_FAIL;
-    OutputDebugString(L"Failed to initialize command line.\n");
-    return false;
-  }
-
-  logging::LoggingSettings logging_settings;
-  logging_settings.logging_dest = logging::LOG_TO_SYSTEM_DEBUG_LOG;
-  succeeded = logging::InitLogging(logging_settings);
-  ATLASSERT(succeeded);
-  if (!succeeded) {
-    *result = E_FAIL;
-    OutputDebugString(L"Failed to initialize logging.\n");
-    return false;
-  }
 
   return true;
 }
@@ -44,30 +21,24 @@ bool Application::ParseCommandLine(LPCTSTR /*command_line*/,
 HRESULT Application::PreMessageLoop(int show_mode) throw() {
   auto result = CAtlExeModuleT::PreMessageLoop(show_mode);
   if (FAILED(result)) {
-    LOG(ERROR) << "CAtlExeModuleT::PreMessageLoop() returned: 0x" << std::hex
-               << result;
     return result;
   }
 
   if (!AtlInitCommonControls(0xFFFF)) {  // all classes
-    LOG(ERROR) << "Failed to initialize common controls.";
     return S_FALSE;
   }
 
   message_loop_ = new CMessageLoop();
   if (message_loop_ == nullptr) {
-    LOG(ERROR) << "Failed to allocate message loop.";
     return S_FALSE;
   }
 
   frame_ = new ui::MainFrame();
   if (frame_ == nullptr) {
-    LOG(ERROR) << "Failed to allocate main frame.";
     return S_FALSE;
   }
 
   if (frame_->CreateEx() == NULL) {
-    LOG(ERROR) << "Failed to create main frame.";
     return S_FALSE;
   }
 
@@ -94,7 +65,6 @@ HRESULT Application::PostMessageLoop() throw() {
 }
 
 void Application::RunMessageLoop() throw() {
-  CHECK(message_loop_ != nullptr) << "Something wrong.";
   message_loop_->Run();
 }
 

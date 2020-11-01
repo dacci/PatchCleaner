@@ -9,8 +9,6 @@
 #include <atlapp.h>
 #pragma warning(pop)
 
-#include <base/at_exit.h>
-
 namespace patch_cleaner {
 
 namespace ui {
@@ -34,8 +32,6 @@ class Application : public CAtlExeModuleT<Application> {
   }
 
  private:
-  base::AtExitManager at_exit_manager_;
-
   CMessageLoop* message_loop_;
   ui::MainFrame* frame_;
 

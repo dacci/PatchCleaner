@@ -7,9 +7,6 @@
 #include <msi.h>
 #include <shlobj.h>
 
-#include <base/logging.h>
-#include <base/win/scoped_co_mem.h>
-
 #include <map>
 #include <set>
 #include <string>
@@ -79,24 +76,20 @@ BOOL MainFrame::PreTranslateMessage(MSG* message) {
 
 int MainFrame::OnCreate(CREATESTRUCT* /*create*/) {
   if (!app::GetApplication()->GetMessageLoop()->AddMessageFilter(this)) {
-    LOG(ERROR) << "Failed to add message filter.";
     return -1;
   }
 
   CBitmap tool_bar_bitmap;
   tool_bar_bitmap = AtlLoadBitmapImage(IDR_MAIN, LR_CREATEDIBSECTION);
   if (tool_bar_bitmap.IsNull()) {
-    LOG(ERROR) << "Failed to load tool bar bitmap: " << GetLastError();
     return -1;
   }
 
   if (!tool_bar_image_.Create(16, 16, ILC_COLOR32, 0, 2)) {
-    LOG(ERROR) << "Failed to create tool bar image.";
     return -1;
   }
 
   if (tool_bar_image_.Add(tool_bar_bitmap) == -1) {
-    LOG(ERROR) << "Failed to add tool bar image.";
     return -1;
   }
 
@@ -108,7 +101,6 @@ int MainFrame::OnCreate(CREATESTRUCT* /*create*/) {
     tool_bar_.AddString(ID_FILE_UPDATE);
     tool_bar_.AddString(ID_EDIT_DELETE);
   } else {
-    LOG(ERROR) << "Failed to create tool bar.";
     return -1;
   }
 
@@ -121,7 +113,6 @@ int MainFrame::OnCreate(CREATESTRUCT* /*create*/) {
                                        StatusBarWinTraits::GetWndStyle(0),
                                        StatusBarWinTraits::GetWndExStyle(0));
   if (!status_bar_.IsWindow()) {
-    LOG(ERROR) << "Failed to create status bar.";
     return -1;
   }
 
@@ -144,7 +135,6 @@ int MainFrame::OnCreate(CREATESTRUCT* /*create*/) {
     column.pszText = L"Size";
     file_list_.InsertColumn(1, &column);
   } else {
-    LOG(ERROR) << "Failed to create file list.";
     return -1;
   }
 
@@ -154,8 +144,7 @@ int MainFrame::OnCreate(CREATESTRUCT* /*create*/) {
 void MainFrame::OnDestroy() {
   SetMsgHandled(FALSE);
 
-  if (!app::GetApplication()->GetMessageLoop()->RemoveMessageFilter(this))
-    LOG(WARNING) << "Failed to remove message filter.";
+  app::GetApplication()->GetMessageLoop()->RemoveMessageFilter(this);
 }
 
 LRESULT MainFrame::OnItemChanged(NMHDR* header) {
@@ -175,7 +164,6 @@ LRESULT MainFrame::OnItemChanged(NMHDR* header) {
 
       wchar_t size_text[32];
       FormatSize(selected_size_, size_text);
-      // DLOG(INFO) << size_text;
       status_bar_.SetText(0, size_text);
     }
   }
@@ -194,15 +182,15 @@ void MainFrame::OnFileUpdate(UINT /*notify_code*/, int /*id*/,
                              CWindow /*control*/) {
   std::wstring cache_path;
   {
-    base::win::ScopedCoMem<wchar_t> windir;
+    PWSTR windir = nullptr;
     auto result =
         SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DEFAULT, NULL, &windir);
     if (FAILED(result)) {
-      LOG(ERROR) << "SHGetKnownFolderPath() failed: 0x" << std::hex << result;
       return;
     }
 
     cache_path.assign(windir).append(L"\\Installer\\");
+    CoTaskMemFree(windir);
   }
 
   FileSizeMap files;
@@ -217,8 +205,6 @@ void MainFrame::OnFileUpdate(UINT /*notify_code*/, int /*id*/,
     wchar_t product[40];
     auto error = MsiEnumProducts(i, product);
     if (error != ERROR_SUCCESS) {
-      LOG_IF(ERROR, error != ERROR_NO_MORE_ITEMS)
-          << "MsiEnumProducts() failed: " << error;
       break;
     }
 
@@ -236,8 +222,6 @@ void MainFrame::OnFileUpdate(UINT /*notify_code*/, int /*id*/,
       length = _countof(transform);
       error = MsiEnumPatches(product, j, patch, transform, &length);
       if (error != ERROR_SUCCESS) {
-        LOG_IF(ERROR, error != ERROR_NO_MORE_ITEMS)
-            << "MsiEnumPatches() failed: " << error;
         break;
       }
 
@@ -306,7 +290,6 @@ void MainFrame::OnEditDelete(UINT /*notify_code*/, int /*id*/,
     auto transaction =
         CreateTransaction(nullptr, nullptr, 0, 0, 0, 1000, nullptr);
     if (transaction == INVALID_HANDLE_VALUE) {
-      LOG(ERROR) << "Failed to create transaction: " << GetLastError();
       break;
     }
 
@@ -314,24 +297,20 @@ void MainFrame::OnEditDelete(UINT /*notify_code*/, int /*id*/,
       WIN32_FILE_ATTRIBUTE_DATA attributes;
       if (!GetFileAttributesTransacted(path, GetFileExInfoStandard, &attributes,
                                        transaction)) {
-        LOG(ERROR) << "Failed to get attributes: " << GetLastError();
         break;
       }
 
       attributes.dwFileAttributes &= ~FILE_ATTRIBUTE_READONLY;
       if (!SetFileAttributesTransacted(path, attributes.dwFileAttributes,
                                        transaction)) {
-        LOG(ERROR) << "Failed to set attributes: " << GetLastError();
         break;
       }
 
       if (!DeleteFileTransacted(path, transaction)) {
-        LOG(ERROR) << "Failed to delete " << path << ": " << GetLastError();
         break;
       }
 
       if (!CommitTransaction(transaction)) {
-        LOG(ERROR) << "Failed to commit transaction: " << GetLastError();
         break;
       }
     } while (false);
